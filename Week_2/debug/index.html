@@ -5,10 +5,10 @@
       body {
         background-color: powderblue;
       }
-      input.text {
+      input[type ="text"] {
         color: orange;
       }
-      button.hover {
+      button:hover {
         color: blue;
       }
     </style>
@@ -17,10 +17,13 @@
     <form>
       <input type="text" id="number" value="0" />
     </form>
-    <button onclick="() => incrementValue()">Increase</button>
+    <button
+      onclick="incrementValue()">Increase
+    </button> <!-- () => increment value doesn't work to call a function, this is for an arrow fnc -->
     <script>
       function incrementValue() {
         var value = parseInt(document.getElementById("number").value);
+        value 
         value++;
         document.getElementById("number").value = value;
       }
