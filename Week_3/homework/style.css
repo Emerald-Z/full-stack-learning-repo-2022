@@ -23,7 +23,7 @@
   
   #main-container {
     height: 100%;
-    width: 66%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,10 +32,18 @@
   }
   
   #weather-container {
-    height: 60%;
+    height: 15%;
     width: 90%;
   }
   
+  #weather-and-icon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 20%;
+    width: 90%;
+  }
+
   #side-container {
     height: 100%;
     width: 34%;
@@ -65,4 +73,39 @@
     font-weight: bold;
     cursor: pointer;
   }
+
+  #weather-box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-left: 50px;
+    margin-right: 50px;
+    justify-content: space-evenly;
+  }
   
+  #weather-item {
+    width: 177px;
+    height: 220px;
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 0.5em;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  #daily-icon {
+    display: block;
+    float: left;
+    height: 150px;
+  }
+  
+  h1{
+    font-weight: 600;
+    font-size: 70px;
+    color: black
+  }
+
+  h1{
+    font-size: 45px;
+    color: black
+  }

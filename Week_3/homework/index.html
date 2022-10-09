@@ -10,7 +10,19 @@
 <body>
 	<div id='main-container'>
 		<div id='weather-container'>
+			<h4 id="date"></h4>
+			<h2 id="weather-for"></h2>
 		</div> 
+		<div id="weather-and-icon">
+			<div id="todayWeather">
+				<h3 id="weather-type"></h3>
+				<h1 id="temp"></h1>
+				<h4 id="aqi"></h4>
+			</div>
+			<img id="daily-icon" src="" alt="">
+		</div>
+		<div id="weather-box">
+		</div>
 	</div>
 	<div id='side-container'>
 		<div>
@@ -23,14 +35,14 @@
 
 <script>
 		// USE YOUR OWN API KEY
-		const apiKey = "";
+		const apiKey = "229f5cca99439a8f7a557affeee01cb8";
 
         // variable that stores the city that is chosen
 		let city;
         // variable that stores the weather and forecast for the city
 		let weather;
         // the variable that stores the air quality index for the city
-		let aqi;
+		var aqi;
 
 		// function that accepts that a number N and returns the name of the day and the date N days from now as a string
 		function formatDate(daysFromNow = 0) {
@@ -86,6 +98,49 @@
 			})	
 		}
 
+		//function called to set today's weather
+		function renderWeather(weatherResults) {
+			weather = {
+							weatherType: weatherResults.list[0].weather[0].main,
+							temp: weatherResults.list[0].main.temp
+						}
+
+			document.querySelector('#weather-type').textContent = weather.weatherType 
+			document.querySelector('#temp').textContent = weather.temp + "°"
+			document.querySelector('#daily-icon').src = `icons/01d.svg`
+			const weatherContainer = document.querySelector('#weather-box')
+			
+			//loops through and creates box divs for the next 5 days
+			for (let i = 1; i <= 5; i++) {
+				let dayWeather = weatherResults.list[i]
+				const box = document.createElement('div')
+				box.id = "weather-item"
+
+				//set date
+				let date = document.createElement('h4')
+				date.style.textAlign = "center"
+				date.innerText = formatDate(i+1)
+				//set image
+				let image = document.createElement('img')
+				let imageCode = dayWeather.weather[0].icon
+				image.src = `icons/${imageCode}.svg`
+				image.alt = dayWeather.weather.main
+				//set temp range
+				let range = document.createElement('h3')
+				let tempMin = dayWeather.main.temp_min
+				let tempMax = dayWeather.main.temp_max
+				range.innerText = tempMin + "° to " + tempMax + "°"
+				range.style.textAlign = "center"
+
+				//appends all div children
+				box.appendChild(date)
+				box.appendChild(image)
+				box.appendChild(range)
+				//makes entire day a child of the weather box to use flex
+				weatherContainer.appendChild(box)
+			}
+		}
+
 		// function that is called whenever a city has been selected
 		function selectCity(fullName, name, state, lat, lon) {
 			// hides the search-results-list since it is not needed right now
@@ -99,7 +154,31 @@
 				lat: lat,
 				lon: lon
 			}
-            // BEGIN CODING HERE
+            
+			document.querySelector('#weather-for').textContent = "Weather for " + city.fullName
+			document.querySelector('#date').textContent = formatDate(1)
+
+			let aqiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`
+			fetch(aqiCall)
+					.then((response) => 
+						// after recieving a response, take the response from the server and convert it to JSON 
+						response.json()
+					)
+					.then((data) => {
+						let aqi = data.list[0].main.aqi
+						document.querySelector('#aqi').textContent = "AQI: " + aqi
+					});
+			
+			
+			let weatherCall = `http://api.openweathermap.org/data/2.5/forecast/?lat=${lat}&lon=${lon}&units=imperial&cnt=7&appid=${apiKey}`
+			fetch(weatherCall)
+					.then((response) => 
+						// after recieving a response, take the response from the server and convert it to JSON 
+						response.json()
+					)
+					.then((data) => {
+						renderWeather(data)
+					});
 		}
 	</script>
 </html>
