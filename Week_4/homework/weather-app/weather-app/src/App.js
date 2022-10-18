@@ -53,21 +53,25 @@ function App() {
             });
 
     }
-
-
   
   return (
     <div className='App'>
       <div id="main-container">
         
-      
-
         {(list.length > 0) && (
           <>
           <div id="weather-container">
             <h4 id="date">{formatDate(0)}</h4>
             <h2 id="weather-for">Weather for {state}</h2>
           </div>
+
+          <CurrentWeather
+          data={data}
+          aqiData={aqi}
+          src={`/icons/${data.list[0].weather[0].icon}.svg`}
+        ></CurrentWeather>
+
+          
         <div id="weather-box"> {
                   list.map((item, index) => 
                     <WeatherCard

@@ -1,6 +1,5 @@
 .weather-item {
-    width: 177px;
-    height: 220px;
+    width: 200px;
     display: flex;
     background-color: #ffffff;
     border-radius: 0.5em;
