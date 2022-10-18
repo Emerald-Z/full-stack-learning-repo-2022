@@ -39,4 +39,33 @@
     cursor: pointer;
 }
   
-  
+#weather-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    height: 15%;
+    width: 90%;
+  }
+
+#weather-box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-left: 50px;
+    margin-right: 50px;
+    justify-content: space-evenly;
+}
+
+#weather-and-icon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 20%;
+    width: 90%;
+}
+
+#daily-icon {
+    display: block;
+    float: left;
+    height: 150px;
+}

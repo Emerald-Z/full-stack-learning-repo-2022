@@ -60,16 +60,18 @@ function App() {
     <div className='App'>
       <div id="main-container">
         
-        {(data.length > 0 && Boolean(data)) && (
+      
+
+        {(list.length > 0) && (
           <>
           <div id="weather-container">
             <h4 id="date">{formatDate(0)}</h4>
             <h2 id="weather-for">Weather for {state}</h2>
           </div>
-        <div> {
-                  list.map((item) => 
+        <div id="weather-box"> {
+                  list.map((item, index) => 
                     <WeatherCard
-                        date={formatDate(1)}
+                        date={formatDate(index+1)}
                         data={item}
                     ></WeatherCard>)
               }
