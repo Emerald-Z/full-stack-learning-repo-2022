@@ -109,7 +109,7 @@
 			document.querySelector('#temp').textContent = weather.temp + "°"
 			document.querySelector('#daily-icon').src = `icons/01d.svg`
 			const weatherContainer = document.querySelector('#weather-box')
-			
+			weatherContainer.innerHTML = ''
 			//loops through and creates box divs for the next 5 days
 			for (let i = 1; i <= 5; i++) {
 				let dayWeather = weatherResults.list[i]
