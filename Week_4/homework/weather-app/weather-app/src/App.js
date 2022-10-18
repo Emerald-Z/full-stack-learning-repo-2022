@@ -8,7 +8,7 @@ function App() {
   const [data, setData] = useState([]);
   const [aqi, setAqi] = useState('');
   const [list, setList] = useState([]);
-  let state = "";
+  const [state, setState] = useState("");
 
   function formatDate(daysFromNow = 0) {
     let output = '';
@@ -24,7 +24,10 @@ function App() {
         const apiKey = "229f5cca99439a8f7a557affeee01cb8";
         let weatherCall = `http://api.openweathermap.org/data/2.5/forecast/?lat=${lat}&lon=${lon}&units=imperial&cnt=7&appid=${apiKey}`;
         let aqiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`
-        state = fullName;
+        setState(fullName);
+
+
+        
         fetch(weatherCall)
             .then((response) => 
                 response.json()
@@ -33,11 +36,12 @@ function App() {
                 setData(data);
                 let temp = [];
                 for (let i = 1; i <=5; i++) {
-                  list.push(data.list[i]);
+                  temp.push(data.list[i]);
                 }
                 
                 setList(temp);
             });
+          
 
         fetch(aqiCall)
             .then((response) => 
@@ -49,13 +53,14 @@ function App() {
             });
 
     }
+
+
   
   return (
     <div className='App'>
       <div id="main-container">
         
-      
-        {(typeof data != 'undefined') && (
+        {(data.length > 0 && Boolean(data)) && (
           <>
           <div id="weather-container">
             <h4 id="date">{formatDate(0)}</h4>
@@ -64,7 +69,7 @@ function App() {
         <div> {
                   list.map((item) => 
                     <WeatherCard
-                        date={formatDate(1)}s
+                        date={formatDate(1)}
                         data={item}
                     ></WeatherCard>)
               }
