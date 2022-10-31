@@ -1,9 +1,11 @@
 /** Module for handling users */
 const express = require("express");
 const cors = require("cors");
+const { useSyncExternalStore } = require("react");
 
 // Define route and middlewares
 const users = express.Router();
+const middleware = require("../middleware/functions");
 users.use(cors());
 users.use(express.json());
 
@@ -40,13 +42,41 @@ users.get("/:user_id", (req, res, next) => {
   let userDB = fakeUsers;
   const user = req.params.user_id;
   if (userDB[user]) {
-    res.status(200).json(userDB[user]);
+    res.status(202).json(userDB[user]);
   } else {
     throw Error("User not found");
   }
-});
+},
+middleware.handleErrors
+);
 
 // TODO: add POST (Create) route with json input validation middleware
+users.post("/", middleware.validateSchema(User), (req, res) => {
+  const body = req.body;
+  //validate fields exist
+  if(body.username == undefined && body.password == undefined) {
+    return res.json({
+      msg: "Error: username and password not defined in request",
+      data: {},
+    });
+  }
 
+  //check if user exists
+  let exists = fakeUsers[body.username] == undefined;
+
+  if (!exists) {
+    return res.json({
+      msg: "Error: username already exists",
+      data: {},
+    });
+  }
+
+  //create new user objet
+  const user_obj = {username: body.username, password: body.password};
+  fakeUsers[body.username] = user_obj;
+  console.log(body);
+  res.send("Success");
+}
+);
 // Export Route
 module.exports = users;
