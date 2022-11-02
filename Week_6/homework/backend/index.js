@@ -24,7 +24,9 @@ var corsOptions = {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 
-app.post("/todo/", cors(corsOptions), async(req, res) => {
+app.options('/todo/', cors());
+
+app.post("/todo/", cors(), async(req, res) => {
     const body = req.body
 
     if(body.email == undefined || body.todo == undefined) {
@@ -48,7 +50,7 @@ app.post("/todo/", cors(corsOptions), async(req, res) => {
     res.status(200).json(query);
 })
 
-app.delete("/todo/", async(req, res) => {
+app.delete("/todo/", cors(), async(req, res) => {
     const body = req.body;
 
     if(body.uid == undefined) {

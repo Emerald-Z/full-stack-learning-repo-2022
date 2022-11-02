@@ -83,8 +83,7 @@ export default function HomePage() {
         body: JSON.stringify({ email: "notemerald@utexas.edu", todo: taskName })
       })
         .then((response) => {
-          console.log(response.status);
-          if (response.status !== 201) {
+          if (response.status !== 200) {
             throw new Error();
           }
           tasks.includes(taskName)
@@ -100,7 +99,7 @@ export default function HomePage() {
   }
 
   async function deleteTask(task) {
-    let apiCall = "https://localhost:4000/todo/";
+    let apiCall = "http://localhost:4000/todo/";
     const response = await fetch(apiCall, {
       method: "DELETE",
       mode: "cors",
@@ -115,14 +114,14 @@ export default function HomePage() {
       body: JSON.stringify({ uid: task.uid })
     })
       .then((response) => {
-        console.log(response);
         if (response.status !== 200) {
           throw new Error();
         } else {
           const newTasks = tasks.filter((obj) => obj.name !== task.name);
+          console.log(newTasks);
           setTasks(newTasks);
-          // console.log(newTasks);
         }
+        console.log(tasks);
         return response.json();
       })
       .catch((e) => {
@@ -139,7 +138,7 @@ export default function HomePage() {
       }
       return task;
     });
-    setTasks(newTasks);
+    //setTasks(newTasks);
   }
 
   function getSummary() {
