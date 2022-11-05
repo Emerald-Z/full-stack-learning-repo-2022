@@ -4,14 +4,25 @@ const retryRequest = require("retry-request");
 const firebase = require("./firebase/cred.js");
 const express = require("express");
 const cors = require("cors");
+const { JWT } = require("google-auth-library");
 const app = express();
 const db = firebase.firestore;
+const jwt = require('jsonwebtoken');
+const auth = require("./auth");
+
 require("dotenv").config();
 
 app.use(express.json());
+const options = {
+  origin: "*",
+  methods: "GET, POST, DELETE"
+}
+app.use(cors(options));
 
 //fetch a person's todo's
-app.get("/todo/:email", async(req, res) => {
+app.get("/todo/:email", auth.authMiddleware, async(req, res) => {
+  //jwt.verify(req.token, auth.JWT); don't do this here, middleware handles it
+
     const todos = db.collection("todo");
     let email = req.params.email;
     const query = await todos.where("email", "==", email).get();
@@ -26,9 +37,9 @@ var corsOptions = {
 
 app.options('/todo/', cors());
 
-app.post("/todo/", cors(), async(req, res) => {
-    const body = req.body
+app.post("/todo/", auth.authMiddleware, cors(), async(req, res) => {
 
+  const body = req.body
     if(body.email == undefined || body.todo == undefined) {
         return res.json({
           msg: "Error: body not defined in request",

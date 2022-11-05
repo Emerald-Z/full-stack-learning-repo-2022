@@ -23,22 +23,23 @@ import {
 
 export default function HomePage() {
   let token = localStorage.getItem("token");
+  let email = localStorage.getItem("username");
 
   async function getTasks() {
-    let apiCall = "http://localhost:4000/todo/notemerald@utexas.edu";
+    let apiCall = `http://localhost:4000/todo/${email}`;
     const response = await fetch(apiCall, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
       credentials: "same-origin",
-      /*headers: {
+      headers: {
         Authorization: `Bearer ${token}`
       },
-      */
       redirect: "follow",
       referrerPolicy: "no-referrer"
     })
       .then((response) => {
+        console.log(response.status)
         if (response.status !== 200) {
           throw new Error();
         }
@@ -76,7 +77,7 @@ export default function HomePage() {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          //Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
@@ -107,7 +108,7 @@ export default function HomePage() {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        //Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",

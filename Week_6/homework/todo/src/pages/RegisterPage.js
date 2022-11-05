@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { useForm } from "@mantine/form";
-import { useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
+
+
 
 import {
   createStyles,
@@ -21,11 +22,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
-export default function LoginPage() {
+export default function RegisterPage() {
   // We get this context to call the login function upon submission of the form
   const auth = useContext(AuthContext);
   const { classes } = useStyles();
-  const navigate = useNavigate();
 
   // New Hook for Forms, should function similar to useState Hooks
   const form = useForm({
@@ -40,18 +40,14 @@ export default function LoginPage() {
   });
 
   function handleSubmit(values) {
-    auth.login(values, form);
-  }
-
-  const navigateRegister = () => {
-    navigate('/register');
+    auth.register(values, form);
   }
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
       {/* https://mantine.dev/core/stack/ : basically a vertical flexbox */}
       <Stack align="center" justify="center" p="xl">
-        <Title /* Size of Font*/ order={1}>Login</Title>
+        <Title /* Size of Font*/ order={1}>Register</Title>
         <TextInput
           classNames={{ wrapper: classes.inputWrapper }}
           required
@@ -69,9 +65,8 @@ export default function LoginPage() {
         />
         {/* https://mantine.dev/core/group : basically a horizontal flexbox*/}
         <Group position="center">
-          <Button type="submit">Login</Button>
+          <Button type="submit">Register</Button>
         </Group>
-        <Button onClick={navigateRegister}>Register</Button>
       </Stack>
     </form>
   );

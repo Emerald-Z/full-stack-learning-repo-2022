@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import FullScreenLayout from "./components/Layouts/FullScreenLayout";
 import DefaultLayout from "./components/Layouts/DefaultLayout";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import AuthContext, { useProvideAuth } from "./contexts/AuthContext";
 
@@ -16,6 +17,10 @@ function App() {
         <Route path="/login" element={<FullScreenLayout></FullScreenLayout>}>
           {/* Index Route: A child route with no path that renders in the parent's outlet at the parent's URL */}
           <Route index element={<LoginPage></LoginPage>}></Route>
+        </Route>
+        <Route path="/register" element={<FullScreenLayout></FullScreenLayout>}>
+          {/* Index Route: A child route with no path that renders in the parent's outlet at the parent's URL */}
+          <Route index element={<RegisterPage></RegisterPage>}></Route>
         </Route>
       </Routes>
     </AuthContext.Provider>

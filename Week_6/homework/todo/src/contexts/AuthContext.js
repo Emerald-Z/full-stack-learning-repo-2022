@@ -4,6 +4,9 @@ import { createContext, useState } from "react";
 // a bug with this hook prevented me from using it 😢
 // import { useLocalStorage } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 let AuthContext = createContext();
 
@@ -17,8 +20,11 @@ export function useProvideAuth() {
     window.localStorage.getItem("loggedIn")
   );
 
+  const notify = () => {
+    toast('registered successfully');
+  }
   async function login(values, form) {
-    let apiCall = "https://tpeo-todo.herokuapp.com/auth/login";
+    let apiCall = "http://localhost:4000/login";
 
     const response = await fetch(apiCall, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -31,19 +37,20 @@ export function useProvideAuth() {
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({ email: values.email, password: values.password }) // body data type must match "Content-Type" header
+      body: JSON.stringify({ username: values.email, password: values.password }) // body data type must match "Content-Type" header
     })
       .then((response) => {
         if (response.status !== 200) {
           throw new Error();
         }
+        console.log(response)
         return response.json();
       })
       .then((response) => {
         setLoggedIn(true);
         window.localStorage.setItem("loggedIn", true);
         window.localStorage.setItem("token", response.token);
-        window.localStorage.setItem("username", response.username);
+        window.localStorage.setItem("username", response.data.username);
         navigate("../");
       })
       .catch((e) => {
@@ -66,6 +73,37 @@ export function useProvideAuth() {
     */
   }
 
+  async function register(values, form) {
+    let apiCall = "http://localhost:4000/register";
+
+    const response = await fetch(apiCall, {
+      method: "POST", 
+      mode: "cors", 
+      cache: "no-cache",
+      credentials: "same-origin", 
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({ username: values.email, password: values.password }) // body data type must match "Content-Type" header
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error();
+        }
+        console.log(response)
+        return response.json();
+      })
+      .then((response) => {
+        notify;
+        navigate("../");
+      })
+      .catch((e) => {
+        form.setErrors({ email: true, password: "can't register!" });
+      });
+    }
   function logout() {
     // In Class TODO: Implement this function
     window.localStorage.clear("loggedIn");
@@ -76,6 +114,7 @@ export function useProvideAuth() {
   return {
     loggedIn,
     login,
+    register,
     logout
   };
 }

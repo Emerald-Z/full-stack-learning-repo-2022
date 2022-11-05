@@ -1,10 +1,22 @@
-const firebase = require("./middleware/firebase");
+const { readdirSync } = require("graceful-fs");
+const { expressJwtSecret } = require("jwks-rsa");
+const retryRequest = require("retry-request");
+const firebase = require("./firebase/cred.js");
 const express = require("express");
 const db = firebase.firestore;
 const pbk = require("pbkdf2");
 const app = express();
 const jwt = require("jsonwebtoken");
 app.use(express.json());
+const cors = require("cors");
+require("dotenv").config();
+
+const options = {
+  origin: "*",
+  methods: "GET, POST, DELETE"
+}
+
+app.use(cors(options));
 
 // Should be stored in environment variable, but ok for this demo
 const SALT = ";asf;klsadfllsfjalskdfjl";
@@ -19,7 +31,7 @@ function authMiddleware(req, res, next) {
     const headers = req.headers["authorization"].split(" ");
     // Check if first argument is Bearer
     if (headers.length === 2 && headers[0] === "Bearer") {
-      // TODO: get the token
+      //get the token
       let token = headers[1];
       try {
         let decodedToken = jwt.verify(token, JWTSECRET);
@@ -43,7 +55,7 @@ app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   // hash the password
   const passHashed = pbk
-    .pbkdf2Sync(password, "SALT", 100, 32, "sha256")
+    .pbkdf2Sync(password, "SALT", 1000, 32, "sha256")
     .toString();
   // Check for duplicate users
   const check = await db.collection("user").doc(username).get();
@@ -52,7 +64,7 @@ app.post("/register", async (req, res) => {
   }
   // TODO: Create the User and fill in user and token
   const user = {passHashed};
-  await db.collection('users').doc(username).set(user);
+  await db.collection('user').doc(username).set(user);
   const token = jwt.sign(user, JWTSECRET);
 
   // Send JWT Token
@@ -66,22 +78,21 @@ app.post("/register", async (req, res) => {
 // Verifies password
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  // TODO: hash the password
   const passHashed = pbk
-    .pbkdf2Sync(password, "SALT", 100, 32, "sha256")
+    .pbkdf2Sync(password, "SALT", 1000, 32, "sha256")
     .toString();
   // Get the user
-  const check = await db.collection("users").doc(username).get();
+  const check = await db.collection("user").doc(username).get();
   // Check if user exists
   if (!check.exists) {
-    return res.status(400).json({ msg: "User does not exists" });
+    return res.status(400).json({ msg: "User does not exist" });
   }
   // Cross reference the stored password with the incoming password (hashed)
   const user = check.data();
   // TODO: fill in samepassword
   let samePassword = (passHashed === user.passHashed);
   if (samePassword) {
-    // TODO: Issue token if passwords match, else, return a 401, not authorized
+    //Issue token if passwords match, else, return a 401, not authorized
     const token = jwt.sign({username}, JWTSECRET);
     return res.json({
       msg: "successfully logged in",
@@ -98,4 +109,6 @@ app.get("/protected", authMiddleware, (req, res) => {
   res.send("User " + req.user + " was authenticated");
 });
 
-app.listen(6000, () => console.log("App listening on port " + 6000));
+app.listen(4000, () => console.log("App listening on port " + 4000));
+
+module.exports = {authMiddleware};
