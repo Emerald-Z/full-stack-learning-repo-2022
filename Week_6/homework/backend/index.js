@@ -8,6 +8,7 @@ const { JWT } = require("google-auth-library");
 const app = express();
 const db = firebase.firestore;
 const jwt = require('jsonwebtoken');
+app.use("/auth", require("./auth").auth);
 const auth = require("./auth");
 
 require("dotenv").config();

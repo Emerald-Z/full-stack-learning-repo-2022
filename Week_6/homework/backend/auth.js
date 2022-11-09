@@ -5,18 +5,20 @@ const firebase = require("./firebase/cred.js");
 const express = require("express");
 const db = firebase.firestore;
 const pbk = require("pbkdf2");
-const app = express();
+//const app = express(); -> this creates a new app
 const jwt = require("jsonwebtoken");
-app.use(express.json());
+
 const cors = require("cors");
 require("dotenv").config();
+const auth = express.Router();
+auth.use(express.json());
 
 const options = {
   origin: "*",
   methods: "GET, POST, DELETE"
 }
 
-app.use(cors(options));
+auth.use(cors(options));
 
 // Should be stored in environment variable, but ok for this demo
 const SALT = ";asf;klsadfllsfjalskdfjl";
@@ -50,7 +52,7 @@ function authMiddleware(req, res, next) {
 }
 
 // Creates a user with password, no checks needed
-app.post("/register", async (req, res) => {
+auth.post("/register", async (req, res) => {
   // Get the username and password from request
   const { username, password } = req.body;
   // hash the password
@@ -76,7 +78,7 @@ app.post("/register", async (req, res) => {
 });
 
 // Verifies password
-app.post("/login", async (req, res) => {
+auth.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const passHashed = pbk
     .pbkdf2Sync(password, "SALT", 1000, 32, "sha256")
@@ -105,10 +107,10 @@ app.post("/login", async (req, res) => {
 });
 
 // Example of a protected route
-app.get("/protected", authMiddleware, (req, res) => {
+auth.get("/protected", authMiddleware, (req, res) => {
   res.send("User " + req.user + " was authenticated");
 });
 
-app.listen(4000, () => console.log("App listening on port " + 4000));
+//app.listen(4000, () => console.log("App listening on port " + 4000));
 
-module.exports = {authMiddleware};
+module.exports = {auth, authMiddleware};

@@ -6,7 +6,7 @@ import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-toast.configure();
+//toast.configure();
 
 let AuthContext = createContext();
 
@@ -20,9 +20,9 @@ export function useProvideAuth() {
     window.localStorage.getItem("loggedIn")
   );
 
-  const notify = () => {
-    toast('registered successfully');
-  }
+  // const notify = () => {
+  //   toast('registered successfully');
+  // }
   async function login(values, form) {
     let apiCall = "http://localhost:4000/login";
 
