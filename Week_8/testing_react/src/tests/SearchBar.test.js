@@ -30,6 +30,7 @@ describe("Search Button", () => {
       expect(requestSearch).not.toHaveBeenCalled();
     });
   });
+
   describe("with non empty query", () => {
     it("triggers requestSearch", () => {
       const requestSearch = jest.fn(); // Mock function
@@ -38,8 +39,11 @@ describe("Search Button", () => {
       );
       const searchInput = queryByPlaceholderText("Search");
       const buttonInput = queryByTestId("search-button");
+      
+      fireEvent.change(searchInput, { target: { value: "abc" } });
+      fireEvent.click(buttonInput);
+      expect(requestSearch).toHaveBeenCalled();
 
-      // TODO: write code
     });
   });
 });

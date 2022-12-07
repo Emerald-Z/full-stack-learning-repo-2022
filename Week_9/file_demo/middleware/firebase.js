@@ -5,7 +5,7 @@ var serviceAccount = require("./cred.json");
 var { getStorage } = require("firebase-admin/storage");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "gs://databases-demo-bd424.appspot.com",
+  storageBucket: "gs://demo1026-98550.appspot.com",
 });
 var bucket = getStorage().bucket();
 

@@ -5,8 +5,10 @@ const express = require("express");
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
-const bucket = require("../middleware/firebase");
+const bucket = require("./firebase/cred.js").bucket;
 const cors = require("cors");
+const os = require("os")
+const { connectStorageEmulator } = require("firebase/storage");
 
 // Route Handler
 const files = express.Router();
@@ -26,8 +28,8 @@ files.get("/get_files/:file_name", async (req, res) => {
       // Downloads the File from the bucket, throws an exception if it doesn't exist
       await bucket.file(file_name).download(downloadOption);
     }
-
     // Return the file
+    console.log(file_location)
     return res.status(200).sendFile(file_location);
   } catch (e) {
     return res.status(404).send("No such file exists");
@@ -60,51 +62,6 @@ files.post("/disk", multer().single("demo_image"), async (req, res) => {
     return res.status(201).json({ msg: "Successful Uploaded" });
   }
   return res.status(400).json({ msg: "File could not be loaded" });
-});
-
-/*
-    TODO: Multi-File Upload Example In Memory, allow up to 3 files at most
-    Hint
-    1. Find what multer middleware you need for multiple files: https://www.npmjs.com/package/multer
-    2. Upload multiple files (via promises)
-*/
-// Upload File via Memory: https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFromMemory.js
-files.post("/multi", multer().array("demo_image", 3), async (req, res) => {
-  const files = req.files;
-  let size = files.length;
-
-//trycatch 
-  for (let i = 0; i < size; i++) {
-  
-    if (files[i] !== undefined) {
-      files.forEach(async (file) => {
-        await bucket.file(req.file.originalname).save(req.file.buffer);
-      })
-      // await bucket.file(req.files[i].originalname).save(req.files[i].buffer);
-      // console.log(req.files[i].originalname);
-      return res.status(201).json({ msg: "Successful Uploaded" });
-    }
-    return res.status(400).json({ msg: "Files could not be loaded" });
-}
-
-  
-
-});
-
-/*
-    Bonus TODO: Listing files their sizes, and mime type in the bucket
-    Check this out: https://github.com/googleapis/nodejs-storage/blob/main/samples/listFiles.js
-*/
-files.get("/list", async (req, res) => {
-  //TODO
-
-  const resp = await bucket.getFiles();
-  const files = resp[0];
-  const list = files.map((file) => {
-    return { name: file.name, size: file.metadata.size }
-  });
-
-  return res.json({data: list});
 });
 
 module.exports = files;

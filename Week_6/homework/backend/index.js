@@ -10,6 +10,9 @@ const db = firebase.firestore;
 const jwt = require('jsonwebtoken');
 app.use("/auth", require("./auth").auth);
 const auth = require("./auth");
+const file = require("./file");
+app.use("/file", file);
+
 
 require("dotenv").config();
 

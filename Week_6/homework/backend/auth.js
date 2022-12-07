@@ -1,7 +1,4 @@
-const { readdirSync } = require("graceful-fs");
-const { expressJwtSecret } = require("jwks-rsa");
-const retryRequest = require("retry-request");
-const firebase = require("./firebase/cred.js");
+const firebase = require("./firebase/cred");
 const express = require("express");
 const db = firebase.firestore;
 const pbk = require("pbkdf2");
@@ -98,7 +95,7 @@ auth.post("/login", async (req, res) => {
     const token = jwt.sign({username}, JWTSECRET);
     return res.json({
       msg: "successfully logged in",
-      data: { username: username },
+      data: { username: username, pfp: user.pfpID },
       token: token,
     });
   } else {

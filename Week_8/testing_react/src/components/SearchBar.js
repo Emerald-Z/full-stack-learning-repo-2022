@@ -9,6 +9,7 @@ export const SearchBar = ({ requestSearch }) => {
       requestSearch(query);
     }
   };
+  
   const updateQuery = (e) => {
     setQuery(e.target.value);
   };

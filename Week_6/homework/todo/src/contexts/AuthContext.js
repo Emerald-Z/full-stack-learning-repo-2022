@@ -24,7 +24,7 @@ export function useProvideAuth() {
   //   toast('registered successfully');
   // }
   async function login(values, form) {
-    let apiCall = "http://localhost:4000/login";
+    let apiCall = "http://localhost:4000/auth/login";
 
     const response = await fetch(apiCall, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -51,26 +51,13 @@ export function useProvideAuth() {
         window.localStorage.setItem("loggedIn", true);
         window.localStorage.setItem("token", response.token);
         window.localStorage.setItem("username", response.data.username);
+        window.localStorage.setItem("pfp", response.data.pfp)
         navigate("../");
       })
       .catch((e) => {
         form.setErrors({ email: true, password: "invalid login" });
       });
 
-    // Homework TODO: Add Backend Support
-    /*const validEmail = "tpeorocks@roblox.com";
-    const validPassword = "angularbad";
-
-    if (values.email === validEmail && values.password === validPassword) {
-      setLoggedIn(true);
-      window.localStorage.setItem("loggedIn", true);
-      // Navigate towards / page, which is relatively one directory back
-      navigate("../");
-    } else {
-      // sets and error with the form
-      form.setErrors({ email: true, password: "Invalid login" });
-    }
-    */
   }
 
   async function register(values, form) {
@@ -97,7 +84,7 @@ export function useProvideAuth() {
         return response.json();
       })
       .then((response) => {
-        notify;
+        //notify;
         navigate("../");
       })
       .catch((e) => {
@@ -105,7 +92,6 @@ export function useProvideAuth() {
       });
     }
   function logout() {
-    // In Class TODO: Implement this function
     window.localStorage.clear("loggedIn");
     setLoggedIn(false);
     console.log(loggedIn);
