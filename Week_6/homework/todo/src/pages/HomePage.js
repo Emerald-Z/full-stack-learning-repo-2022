@@ -2,8 +2,9 @@ import { useEffect, useState, Fragment } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import FileUploadComponent from "../components/FileUploadComponent";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { ref, getDownloadURL } from "firebase/storage";
 import storage from "../components/Firebase/firebase"
+import '../App.css';
 
 import {
   Group,
@@ -249,29 +250,26 @@ export default function HomePage() {
   return (
     <div id="main_div">
     <div>
-    <img src={pfp} alt="pfp" width="300" height="200"></img>
-      <Button onClick={navigateAccount}>Account</Button>
+      <Stack>
+        <img src={pfp} alt="pfp" width="300" height="200"></img>
+        <Button onClick={navigateAccount}>Account</Button>
+      </Stack>
     </div>
     <div>
-    <Stack align="center" justify="center" p="xl">
-      {getSummary()}
-      <Group>
-        <Input
-          value={taskName}
-          placeholder="Type your task here"
-          onChange={(event) => setTaskName(event.target.value)}
-        ></Input>
-        <Button rightIcon={<FaPlus />} onClick={() => addTask()}>
-          Add
-        </Button>
-        <Button onClick={showUpload}> Import JSON</Button>
-        {isShown && (
-          <FileUploadComponent handleSubmission={handleSubmission}></FileUploadComponent>
-        )}
-      
-      </Group>
-      {tasks.length < 1 && <></>}
-      <Stack>
+      <Stack align="center" justify="center" p="xl">
+        {getSummary()}
+        <Group>
+          <Input
+            value={taskName}
+            placeholder="Type your task here"
+            onChange={(event) => setTaskName(event.target.value)}
+          ></Input>
+          <Button rightIcon={<FaPlus />} onClick={() => addTask()}>
+            Add
+          </Button>
+        </Group>
+        {tasks.length < 1 && <></>}
+        <Stack>
         {tasks.map((task, index) => (
           <Checkbox
             checked={task.finished}
@@ -282,9 +280,15 @@ export default function HomePage() {
           ></Checkbox>
         ))}
       </Stack>
-      <Button onClick= {exportData}>Export List</Button>
-    </Stack>
+      </Stack>
     </div>
+    <div>
+      <Button onClick={showUpload}> Import JSON</Button>
+          {isShown && (
+            <FileUploadComponent handleSubmission={handleSubmission}></FileUploadComponent>
+          )}
+        <Button onClick= {exportData}>Export List</Button>
+        </div>
     </div>
   );
 }

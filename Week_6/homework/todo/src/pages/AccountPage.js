@@ -4,6 +4,7 @@ import { useEffect, useState, Fragment } from "react";
 import FileUploadComponent from "../components/FileUploadComponent";
 import storage from "../components/Firebase/firebase"
 import { ref, getDownloadURL } from "firebase/storage";
+import '../Account.css';
 
 export default function AccountPage() {
   const navigate = useNavigate(); 
@@ -112,11 +113,11 @@ export default function AccountPage() {
     }
 
   return (
-    <div>
+    <div id='account_main'>
         <Button onClick={navigateHome}>Home</Button>
-        <img src={pfp} alt="pfp" width="300" height="200"></img>
         <Title>${email}'s Account</Title>
         <Stack>
+          <img src={pfp} alt="pfp" width="300" height="200"></img>
             <h3>username:</h3>
         </Stack>
         <Button onClick={showUpload}>change profile photo</Button>
