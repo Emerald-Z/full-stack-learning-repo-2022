@@ -51,7 +51,7 @@ export function useProvideAuth() {
         window.localStorage.setItem("loggedIn", true);
         window.localStorage.setItem("token", response.token);
         window.localStorage.setItem("username", response.data.username);
-        window.localStorage.setItem("pfp", response.data.pfp)
+        window.localStorage.setItem("pfp", response.data.pfp);
         navigate("../");
       })
       .catch((e) => {

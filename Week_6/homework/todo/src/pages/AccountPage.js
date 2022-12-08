@@ -30,7 +30,10 @@ export default function AccountPage() {
       .then((result) => {
         setIsShown(false);
         console.log("Success:", result);
-        //downloadImage(result);
+        deletePhoto(localStorage.getItem("pfp"));
+        window.localStorage.setItem("pfp", result.name);
+        downloadImage(result.name);
+        updatePfp(result.name);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -55,6 +58,58 @@ export default function AccountPage() {
   useEffect(() => {
     downloadImage(localStorage.getItem("pfp"));
   }, [])
+
+  async function updatePfp(pfp) {
+    let apiCall = "http://localhost:4000/pfp";
+        await fetch(apiCall, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          //Authorization: `Bearer ${token}`
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify({ username: {email}, pfp: pfp})
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error();
+          }
+          return response.json();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+
+    async function deletePhoto(pfp) {
+      let apiCall = "http://localhost:4000/file/delete";
+      const response = await fetch(apiCall, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          //Authorization: `Bearer ${token}`
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify({ file_name: pfp })
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error();
+          }
+          return response.json();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
 
   return (
     <div>

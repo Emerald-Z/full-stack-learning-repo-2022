@@ -67,7 +67,7 @@ app.post("/todo/", auth.authMiddleware, cors(), async(req, res) => {
 
 app.delete("/todo/", cors(), async(req, res) => {
     const body = req.body;
-
+    console.log(body)
     if(body.uid == undefined) {
         return res.json({
           msg: "Error: uid not defined in request",
@@ -78,6 +78,26 @@ app.delete("/todo/", cors(), async(req, res) => {
     //check taskName too?
     await db.collection("todo").doc(body.uid).delete();
     res.status(200).json("Delete Successful");
+})
+
+app.put("/pfp/", cors(), async(req, res) => {
+
+  const body = req.body
+    if(body.pfp == undefined || body.username == undefined) {
+        return res.json({
+          msg: "Error: pfp not defined in request",
+          data: {},
+        });
+    }
+
+    console.log(req.body.username)
+    const data = {
+      username: req.body.username,
+      pfp: body.pfp
+    }
+
+    const query = await db.collection("user").doc(data.username).update({pfp: data.pfp});
+    res.status(200).json(query);
 })
 
 app.listen(process.env["PORT"], () =>

@@ -7,8 +7,6 @@ const multer = require("multer");
 const fs = require("fs");
 const bucket = require("./firebase/cred.js").bucket;
 const cors = require("cors");
-const os = require("os")
-const { connectStorageEmulator } = require("firebase/storage");
 
 // Route Handler
 const files = express.Router();
@@ -32,17 +30,37 @@ files.get("/get_files/:file_name", async (req, res) => {
     console.log(file_location)
     return res.status(200).sendFile(file_location);
   } catch (e) {
+    console.log(e)
     return res.status(404).send("No such file exists");
   }
 });
 
+files.delete("/delete/", async(req, res) => {
+  const body = req.body;
+  console.log(body);
+
+  if(body.file_name == undefined) {
+    return res.json({
+      msg: "Error: file not defined in request",
+      data: {},
+    });
+  }
+
+  const file_name = body.file_name;
+
+  await bucket.file(file_name).delete();
+  return res.status(200).json("success", file_name);
+})
+
 // Upload File via Memory: https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFromMemory.js
+//pass in username
 files.post("/", multer().single("demo_image"), async (req, res) => {
   const file = req.file;
+  console.log(file)
   if (file !== undefined) {
     // Upload via buffers
     await bucket.file(req.file.originalname).save(req.file.buffer);
-    return res.status(201).json({ msg: "Successful Uploaded" });
+    return res.status(201).json({ msg: "Successful Uploaded", name: file.originalname });
   }
   return res.status(400).json({ msg: "File could not be loaded" });
 });
