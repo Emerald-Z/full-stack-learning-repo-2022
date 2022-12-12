@@ -283,11 +283,13 @@ export default function HomePage() {
       </Stack>
     </div>
     <div>
+      <Stack>
       <Button onClick={showUpload}> Import JSON</Button>
           {isShown && (
             <FileUploadComponent handleSubmission={handleSubmission}></FileUploadComponent>
           )}
         <Button onClick= {exportData}>Export List</Button>
+        </Stack>
         </div>
     </div>
   );

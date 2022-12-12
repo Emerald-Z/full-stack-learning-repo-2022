@@ -118,7 +118,7 @@ export default function AccountPage() {
         <Title>${email}'s Account</Title>
         <Stack>
           <img src={pfp} alt="pfp" width="300" height="200"></img>
-            <h3>username:</h3>
+            <h3>username: {window.localStorage.getItem("username")}</h3>
         </Stack>
         <Button onClick={showUpload}>change profile photo</Button>
         {isShown && (
